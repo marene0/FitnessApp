@@ -9,6 +9,12 @@ namespace FitnessApp.Data
 {
     public class DataContext : DbContext
     {
+        public DataContext()
+        {
+            
+        }
+
+
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
 
@@ -16,41 +22,57 @@ namespace FitnessApp.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Exercise> Exercises { get; set; }
-        public DbSet<ExercisesWorkout> ExercisesWorkouts { get; set; }
-        public DbSet<ExerciseWorkoutAdminSet> ExerciseWorkoutAdminSets { get; set; }
-        public DbSet<Goals> Goals { get; set; }
+        public DbSet<ExerciseWorkout> ExerciseWorkouts { get; set; }
+        public DbSet<Goal> Goals { get; set; }
         public DbSet<Workout> Workouts { get; set; }
-        public DbSet<WorkoutAdminSet> WorkoutAdminSets { get; set; }
+        public DbSet<UserWorkout> UserWorkouts { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ExercisesWorkout>()
-                  .HasMany(e => e.Exercises)
-                  .WithOne(ew => ew.ExercisesWorkout);
+            modelBuilder.Entity<Exercise>()
+                  .HasMany(ew => ew.ExerciseWorkouts)
+                  .WithOne(e => e.Exercise)
+                  .HasForeignKey(t => t.ExerciseId);
 
             modelBuilder.Entity<Workout>()
-                  .HasMany(ew => ew.ExercisesWorkout)
-                  .WithOne(w => w.Workout);
+                  .HasMany(ew => ew.ExerciseWorkouts)
+                  .WithOne(w => w.Workout)
+                  .HasForeignKey(w => w.WorkoutId);
 
-            modelBuilder.Entity<WorkoutAdminSet>()
-                .HasMany(a => a.ExerciseWorkoutAdminSets)
-                .WithOne(wa => wa.WorkoutAdminSets);
+            modelBuilder.Entity<Workout>()
+                  .HasMany(uw => uw.UserWorkouts)
+                  .WithOne(w => w.Workout)
+                  .HasForeignKey(w => w.WorkoutId);
 
-            modelBuilder.Entity<Exercise>()
-                .HasMany(g => g.Goals)
-                .WithOne(e => e.Exercises);
+           
 
-            modelBuilder.Entity<Goals>()
-               .HasOne(g => g.User)
-               .WithMany(u => u.Goals)
-               .HasForeignKey(g => g.UserId)
-               .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Goal>() 
+              .HasOne(e => e.Exercise)
+              .WithMany(g => g.Goals)
+              .HasForeignKey(e => e.ExerciseId);
 
+            modelBuilder.Entity<Goal>()
+               .HasOne(u => u.User)
+               .WithMany(g => g.Goals)
+               .HasForeignKey(u => u.UserId);
 
             modelBuilder.Entity<User>()
-                .HasMany(w => w.Workouts)
-                .WithOne(u => u.Users);
+                 .HasMany(uw => uw.UserWorkouts)
+                 .WithOne(u => u.User)
+                 .HasForeignKey(x => x.UserId);
+
+            modelBuilder.Entity<User>()
+                .HasMany(uw => uw.OwnedWorkouts)
+                .WithOne(u => u.Owner)
+                .HasForeignKey(x => x.OwnerId);
+
+
+            modelBuilder.Entity<ExerciseWorkout>()
+                .HasKey(e => new { e.WorkoutId, e.ExerciseId });
+
+            modelBuilder.Entity<UserWorkout>()
+                .HasKey(e => new { e.WorkoutId, e.UserId });
         }
 
     }

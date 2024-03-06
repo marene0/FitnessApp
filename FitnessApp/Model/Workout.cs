@@ -7,15 +7,14 @@ using System.Threading.Tasks;
 
 namespace FitnessApp.Model
 {
-    public class Workout
+    public class Workout : BaseEntity
     {
-        [Key]
-        public int WorkoutId { get; set; }
-        public string WorkoutName { get; set; }
-        public User Users { get; set; }
+        public Guid? OwnerId { get; set; }
         public DateTime Date { get; set; }
-        // public ICollection<Exercise> Exercises { get; set; }
-        public ICollection<ExercisesWorkout> ExercisesWorkout { get; set; }
+        public User? Owner { get; set; }
+        public string Name { get; set; }
+        public  ICollection<ExerciseWorkout> ExerciseWorkouts { get; set; }
+        public  ICollection<UserWorkout> UserWorkouts { get; set; }
 
     }
 }
