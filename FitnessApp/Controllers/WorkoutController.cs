@@ -65,14 +65,14 @@ namespace FitnessApp.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Workout>> GetWorkoutById(Guid id)
+        public async Task<ActionResult<WorkoutDTO>> GetWorkoutByIdAsync(Guid id)  
         {
-            var workout = await _workoutService.GetWorkoutByIdAsync(id);
-            if (workout == null)
+            var workoutDto = await _workoutService.GetWorkoutByIdAsync(id);
+            if (workoutDto == null)
             {
                 return NotFound();
             }
-            return Ok(workout);
+            return Ok(workoutDto);
         }
 
         //[HttpPost("/create")]
@@ -111,12 +111,6 @@ namespace FitnessApp.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Failed to create workout");
             }
         }
-
-
-
-
-
-
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteWorkout(Guid id)

@@ -71,8 +71,6 @@ namespace FitnessApp.Data
             modelBuilder.Entity<ExerciseWorkout>()
                 .HasKey(e => new { e.WorkoutId, e.ExerciseId });
 
-            modelBuilder.Entity<UserWorkout>()
-                .HasKey(e => new { e.WorkoutId, e.UserId });
         }
 
     }

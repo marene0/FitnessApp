@@ -20,5 +20,8 @@ namespace FitnessApp.Controllers
             var workouts = await _workoutService.GetAllWorkoutsAsync(userId);
             return Ok(workouts);
         }
+
+
+
     }
 }

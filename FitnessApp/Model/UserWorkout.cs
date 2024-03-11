@@ -1,6 +1,6 @@
 ﻿namespace FitnessApp.Model
 {
-    public class UserWorkout 
+    public class UserWorkout : BaseEntity
     {
         public Guid UserId { get; set; }
         public Guid WorkoutId { get; set; }

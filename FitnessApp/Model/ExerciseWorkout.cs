@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FitnessApp.Model
 {
-    public class ExerciseWorkout : BaseEntity
+    public class ExerciseWorkout //: BaseEntity
     {
         public Workout Workout { get; set; }
 

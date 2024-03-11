@@ -31,6 +31,7 @@ namespace FitnessApp
             builder.Services.AddSwaggerGen();
             builder.Services.AddScoped<SeedingService>();
             builder.Services.AddScoped<IWorkoutService, WorkoutService>();
+            builder.Services.AddScoped<IGoalService, GoalService>();
 
             // builder.Services.AddDbContext
             builder.Services.AddDbContext<DataContext>(options =>

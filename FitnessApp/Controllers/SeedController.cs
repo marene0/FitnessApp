@@ -44,14 +44,23 @@ namespace FitnessApp.Controllers
 
         }
 
-        //[HttpGet("goal")]
-        //public IActionResult GetSeedGoal()
-        //{
+        [HttpGet("goal")]
+        public IActionResult GetSeedGoal()
+        {
 
-        //    _seed.SeedDataContext();
-        //    return Ok("Database  Goal seeding successful");
+            _seed.SeedDataContext();
+            return Ok("Database  Goal seeding successful");
 
-        //}
+        }
+
+        [HttpGet("UserWorkout")]
+        public IActionResult GetSeedUserWorkout()
+        {
+
+            _seed.SeedDataContext();
+            return Ok("Database  User workout seeding successful");
+
+        }
 
 
     }

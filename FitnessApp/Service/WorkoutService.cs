@@ -20,9 +20,27 @@ namespace FitnessApp.Services
             return await _context.Workouts.ToListAsync();
         }
 
-        public async Task<Workout> GetWorkoutByIdAsync(Guid id)
+        //public async Task<WorkoutDTO> GetWorkoutByIdAsync(Guid id)
+        //{
+        //    return await _context.Workouts.FindAsync(id);
+        //}
+
+        public async Task<WorkoutDTO> GetWorkoutByIdAsync(Guid id)
         {
-            return await _context.Workouts.FindAsync(id);
+            var workout = await _context.Workouts.FindAsync(id);
+            if (workout == null)
+            {
+                return null;
+            }
+
+            var workoutDto = new WorkoutDTO
+            {
+                Name = workout.Name,
+                Date = workout.Date,
+                OwnerId = workout.OwnerId
+            };
+
+            return workoutDto;
         }
 
         public async Task<WorkoutDTO> CreateWorkoutAsync(WorkoutDTO workoutDto)
@@ -64,20 +82,20 @@ namespace FitnessApp.Services
             return workoutDto;
         }
 
-        public async Task<Workout> UpdateWorkoutAsync(Guid id, Workout updatedWorkout)
+        public async Task<WorkoutDTO> UpdateWorkoutAsync(Guid id, WorkoutDTO updatedWorkoutDto)
         {
-            var workout = await _context.Workouts.FindAsync(id);
-            if (workout == null)
+            var workoutDto = await _context.Workouts.FindAsync(id);
+            if (workoutDto == null)
             {
                 return null;
             }
 
-            workout.Name = updatedWorkout.Name;
-            workout.Date = updatedWorkout.Date;
-            workout.OwnerId = updatedWorkout.OwnerId;
+            workoutDto.Name = updatedWorkoutDto.Name;
+            workoutDto.Date = updatedWorkoutDto.Date;
+            workoutDto.OwnerId = updatedWorkoutDto.OwnerId;
 
             await _context.SaveChangesAsync();
-            return workout;
+            return updatedWorkoutDto;
         }
 
         public async Task<bool> DeleteWorkoutAsync(Guid id)
@@ -93,31 +111,26 @@ namespace FitnessApp.Services
             return true;
         }
 
-        public List<Workout> GetAllWorkouts()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Workout GetWorkoutById(Guid id)
-        {
-            throw new NotImplementedException();
-        }
+        //public List<Workout> GetAllWorkouts()
+        //{
+        //    throw new NotImplementedException();
+        //}
 
        
 
-        public async Task<bool> CreateWorkout(Workout workout)
-        {
-            try
-            {
-                _context.Workouts.Add(workout);
-                await _context.SaveChangesAsync();
-                return true; 
-            }
-            catch (Exception)
-            {
-                return false; 
-            }
-        }
+        //public async Task<bool> CreateWorkout(Workout workout)
+        //{
+        //    try
+        //    {
+        //        _context.Workouts.Add(workout);
+        //        await _context.SaveChangesAsync();
+        //        return true; 
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return false; 
+        //    }
+        //}
 
 
 
