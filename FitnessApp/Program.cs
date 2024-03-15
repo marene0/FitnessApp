@@ -1,42 +1,14 @@
 using FitnessApp.Data;
+using FitnessApp.Exceptions;
 using FitnessApp.Interfaces;
-using FitnessApp.Repository;
-using Microsoft.AspNetCore.Hosting;
+using FitnessApp.Service;
+using FitnessApp.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-//namespace FitnessApp
-//{
-//    public class Program
-//    {
-//        public static void Main(string[] args)
-//        {
-//            CreateHostBuilder(args).Build().Run();
-
-//        }
-
-
-//        public static IHostBuilder CreateHostBuilder(string[] args) =>
-//            Host.CreateDefaultBuilder(args)
-//                .ConfigureWebHostDefaults(webBuilder =>
-//                {
-//                    webBuilder.UseStartup<Startup>();
-//                })
-//                .ConfigureServices((hostContext, services) =>
-//                {
-//                    services.AddDbContext<DataContext>(options =>
-//                        options.UseSqlServer(hostContext.Configuration.GetConnectionString("DefaultConnection")));
-//                });
-//    }
-
-//}
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 
 namespace FitnessApp
 {
@@ -47,16 +19,68 @@ namespace FitnessApp
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
+            builder.Services.AddScoped<SeedingService>();
+            builder.Services.AddScoped<IWorkoutService, WorkoutService>();
+            builder.Services.AddScoped<IGoalService, GoalService>();
+            builder.Services.AddScoped<IManageImage, ManageImage>();
+            builder.Services.AddScoped<IUserService, UserService>();
+
+            // builder.Services.AddDbContext
+            builder.Services.AddDbContext<DataContext>(options =>
+                        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+
+
+
+
+
+
+
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+
+            .AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ClockSkew = TimeSpan.Zero,
+
+                    ValidAudience = builder.Configuration["JWT:ValidAudience"],
+                    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+                };
+            });
+
+
+
+            // Configure CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: "AllowMyOrigins", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -65,11 +89,12 @@ namespace FitnessApp
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
-
+                       // Enable CORS
+            app.UseCors("AllowMyOrigins");
 
             app.MapControllers();
-
             app.Run();
         }
     }

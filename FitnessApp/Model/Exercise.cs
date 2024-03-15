@@ -6,16 +6,14 @@ using System.Threading.Tasks;
 
 namespace FitnessApp.Model
 {
-    public class Exercise
+    public class Exercise: BaseEntity
     {
-        [Key]
-        public int ExerciseId { get; set; }
-        public string ExerciseName { get; set; }
         public string Type { get; set; }
-        public int Time { get; set; }
+
+        public string Name { get; set; }
         public int CaloriesLost { get; set; }
         public string Complexity { get; set; }
-        public ExercisesWorkout ExercisesWorkout { get; set; }
-        public ICollection<Goals> Goals { get; set; }
+        public ICollection<ExerciseWorkout> ExerciseWorkouts { get; set; }
+        public ICollection<Goal> Goals { get; set; }
     }
 }
