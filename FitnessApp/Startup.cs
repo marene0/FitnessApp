@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using FitnessApp.Data;
 using FitnessApp.Interfaces;
 using FitnessApp.Services;
+using FitnessApp.Exceptions;
 
 namespace FitnessApp
 {
@@ -31,7 +32,10 @@ namespace FitnessApp
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers(opt =>
+            {
+                opt.Filters.Add(typeof(ExceptionResponseFilter));
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "FitnessApp", Version = "v1" });

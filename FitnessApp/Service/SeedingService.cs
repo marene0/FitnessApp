@@ -22,8 +22,8 @@ namespace FitnessApp.Data
 
                 var users = new List<User>()
                 {
-                    new User { FirstName = "Мар'яна", LastName = "Хортюк", Email = "chucbki@gmail.com", Password = "12345Qwert" },
-                    new User { FirstName = "Іванка", LastName = "Борд", Email = "ivanka@gmail.com", Password = "Qwert12345" }
+                    new User { FirstName = "Мар'яна", LastName = "Хортюк", Email = "chucbki@gmail.com" },
+                    new User { FirstName = "Іванка", LastName = "Борд", Email = "ivanka@gmail.com" }
 
                 };
                 _context.Users.AddRange(users);

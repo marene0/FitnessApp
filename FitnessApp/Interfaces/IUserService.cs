@@ -1,13 +1,12 @@
-﻿
-using FitnessApp.Model;
+﻿using FitnessApp.DTO;
 
 namespace FitnessApp.Interfaces
 {
     public interface IUserService
     {
-        Task<User?> GetById(Guid id);
-        Task<bool> Create(User user);
-        Task<bool> Update(User user);
-        Task<bool> Delete(Guid id);
+        Task<UserDTO> GetUserById(Guid id);
+        Task<UserDTO> CreateUser(UserDTO user);
+        Task<UserDTO> UpdateUser(UserDTO UpdateuserDto);
+        Task<bool> DeleteUser(Guid id);
     }
 }

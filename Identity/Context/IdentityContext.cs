@@ -15,11 +15,19 @@ namespace Identity.Data
 
         }
 
-
         public IdentityContext(DbContextOptions<IdentityContext> options) : base(options)
         {
 
         }
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+        }
     }
 }
+
+
+
+
+

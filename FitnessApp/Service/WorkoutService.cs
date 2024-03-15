@@ -3,6 +3,7 @@ using FitnessApp.Data;
 using FitnessApp.Model;
 using FitnessApp.Interfaces;
 using FitnessApp.DTO;
+using System.Security.Authentication;
 
 namespace FitnessApp.Services
 {
@@ -52,11 +53,9 @@ namespace FitnessApp.Services
 
                 if (!userExists)
                 {
-                    //throw exception
-                    return null;
+                    throw new AuthenticationException();
                 }
             }
-
 
             var exerciseIds = workoutDto.Exercises.Select(t => t.ExerciseId);
 
@@ -131,8 +130,6 @@ namespace FitnessApp.Services
         //        return false; 
         //    }
         //}
-
-
 
         public async Task<List<Workout>> GetAllWorkoutsAsync(Guid userId)
         {

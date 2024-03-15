@@ -1,21 +1,14 @@
 using FitnessApp.Data;
+using FitnessApp.Exceptions;
 using FitnessApp.Interfaces;
-
+using FitnessApp.Service;
 using FitnessApp.Services;
-
-//using FitnessApp.Interfaces;
-//using FitnessApp.Repository;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 
 namespace FitnessApp
 {
@@ -32,10 +25,47 @@ namespace FitnessApp
             builder.Services.AddScoped<SeedingService>();
             builder.Services.AddScoped<IWorkoutService, WorkoutService>();
             builder.Services.AddScoped<IGoalService, GoalService>();
+            builder.Services.AddScoped<IManageImage, ManageImage>();
+            builder.Services.AddScoped<IUserService, UserService>();
 
             // builder.Services.AddDbContext
             builder.Services.AddDbContext<DataContext>(options =>
                         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+
+
+
+
+
+
+
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+
+            .AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ClockSkew = TimeSpan.Zero,
+
+                    ValidAudience = builder.Configuration["JWT:ValidAudience"],
+                    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+                };
+            });
+
 
 
             // Configure CORS
@@ -58,6 +88,8 @@ namespace FitnessApp
             }
 
             app.UseHttpsRedirection();
+
+            app.UseAuthentication();
             app.UseAuthorization();
                        // Enable CORS
             app.UseCors("AllowMyOrigins");
